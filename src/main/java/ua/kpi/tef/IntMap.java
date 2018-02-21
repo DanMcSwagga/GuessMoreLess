@@ -9,7 +9,12 @@ public class IntMap {
         this.max = max;
     }
 
-    public void outputSingleNode(String message) {
-        System.out.format(message, this.min, this.max);
+    /**
+     * Outputs a <strong>single node</strong> of the List of Integer Pairs, which set the game range
+     * @param message to be outputted
+     * @param attempt number of the user
+     */
+    public void outputSingleNode(String message, int attempt) {
+        System.out.format(message, attempt + 1, this.min, this.max);
     }
 }
