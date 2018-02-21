@@ -1,35 +1,60 @@
 package ua.kpi.tef;
 
 import java.util.Scanner;
+import java.util.List;
 
 public class Controller {
 
-    // Constructor
-    Model model;
-    View view;
+    public static final int MIN = 0;
+    public static final int MAX = 100;
+    public static final int LOWEST_INDEX = 0; // TODO use to display all the nodes
+    private static int currentTry = 0;
 
-    public Controller(Model model, View view) {
+    private Model model;
+    private View view;
+
+    Controller(Model model, View view) {
         this.model  = model;
         this.view = view;
     }
 
-    // The Work method
-    public void processUser(){
-        Scanner sc = new Scanner(System.in);
+    public void startGame(){
+        view.printMessage(View.INTRO_ASCII_ART);
+        view.printMessageAndTwoInts(View.INTRO_MESSAGE, MIN, MAX);
 
-        model.setValue(inputIntValueWithScanner(sc));
-        model.addIntOurValue(4);
+        gameProcess();
+        view.printMessage(View.USER_WON);
 
-        view.printMessageAndInt(View.OUR_INT, model.getValue());
+        outputHistoryOfTries();
     }
 
-    // The Utility methods
-    public int inputIntValueWithScanner(Scanner sc) {
-        view.printMessage(View.INPUT_INT_DATA);
-        while( ! sc.hasNextInt()) {
-            view.printMessage(view.WRONG_INPUT_INT_DATA + view.INPUT_INT_DATA);
-            sc.next();
+    private void gameProcess() {
+        do {
+            Scanner sc = new Scanner(System.in);
+
+            model.addNodeToIntMap(model.rand(0, 100), model.rand(0, 100)); // TODO change later to actual range
+            model.gameRange.get(currentTry).outputSingleNode(View.CURRENT_RANGE);
+
+            model.setGuess(validateIntValue(sc)); // set current user guess
+
+            currentTry++;
+
+        } while (!model.getGameWon());
+    }
+
+    private void outputHistoryOfTries() {
+        view.printMessage(View.HISTORY_OF_TRIES);
+        for (; currentTry > LOWEST_INDEX; currentTry--) {
+            model.gameRange.get(currentTry - 1).outputSingleNode(View.PREVIOUS_RANGE);
         }
-        return sc.nextInt();
+    }
+
+    private int validateIntValue(Scanner scanner) {
+        view.printMessage(View.INPUT_INT);
+        while(!scanner.hasNextInt()) {
+            view.printMessage(View.WRONG_INT_INPUT + View.INPUT_INT);
+            scanner.next();
+        }
+        return scanner.nextInt();
     }
 }
