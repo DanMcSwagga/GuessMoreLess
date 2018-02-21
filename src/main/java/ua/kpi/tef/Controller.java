@@ -20,13 +20,11 @@ public class Controller {
      * Creates a single instance of the game
      */
     public void startGame(){
-        view.printMessage(View.INTRO_ASCII_ART);
+        view.printMessage(View.ASCII_ART_INTRO);
         view.printMessageAndTwoInts(View.INTRO_MESSAGE, START_MIN, START_MAX);
 
-        //TODO clear later -- testing purposes only
-        System.out.println(" --- Psst. Your hidden number is " + model.getNumber() + ". Don't tell anyone --- ");
-
         gameProcess();
+        view.printMessage(View.ASCII_ART_OUTRO);
         view.printMessage(View.USER_WON);
 
         outputHistoryOfTries();
@@ -39,26 +37,72 @@ public class Controller {
         model.addNodeToIntMap(START_MIN, START_MAX);
         do {
             if (model.getCurrentTry() > 0) view.printMessage(View.PREVIOUS_TRY + model.getGuess());
+
+            model.getGameRange().get(model.getCurrentTry()).outputSingleNode(View.CURRENT_RANGE_ATTEMPT, model.getCurrentTry());
+
             Scanner sc = new Scanner(System.in);
+            model.setGuess(validateInput(sc));
 
-            model.getGameRange().get(model.getCurrentTry()).outputSingleNode(View.CURRENT_RANGE, model.getCurrentTry());
-
-            model.setGuess(validateInputInt(sc));
-            changeGameRangeWithUserInput();
-
+            changeGameStatus();
             model.incrementCurrentTry();
         } while (!model.getGameWon());
     }
 
     /**
-     * Changes the game's range via user's <strong>validated</strong> integer input
+     * Validates user's input.
+     * 1st (outer) check - for invalid type of input
+     * 2nd (inner) check - for invalid int boundaries (out of game range)
+     * @param scanner simple text scanner which can parse primitive types and strings using regular expressions
+     * @return validated and parsed user's integer input
      */
-    private void changeGameRangeWithUserInput() {
+    private int validateInput(Scanner scanner) {
+        view.printMessage(View.INPUT_INT);
+
+        boolean incorrectInput = true;
+        int userGuess = -1;
+
+        while (incorrectInput) {
+            if (scanner.hasNextInt()) {
+                userGuess = scanner.nextInt();
+
+                if (!fitsRange(userGuess)) {
+                    view.printMessageAndTwoInts(View.WRONG_INPUT_INT_RANGE,
+                            model.getGameRange().get(model.getCurrentTry()).min,
+                            model.getGameRange().get(model.getCurrentTry()).max);
+                    view.printMessage(View.INPUT_INT);
+                } else {
+                    incorrectInput = false;
+                }
+            } else {
+                scanner.next();
+                view.printMessage(View.WRONG_TYPE_INPUT + View.INPUT_INT);
+            }
+        }
+
+        return userGuess;
+    }
+
+    /**
+     * Checks if user has inputted his guess in <strong>correct boundaries</strong> (within game range)
+     * @return true if guess fits the range, false otherwise
+     */
+    private boolean fitsRange(int guess) {
+        return (guess >= model.getGameRange().get(model.getCurrentTry()).min && guess <= model.getGameRange().get(model.getCurrentTry()).max);
+    }
+
+
+    /**
+     * Changes the game's range via user's <strong>validated</strong> integer input
+     * or sets the game as won if input matched the generated number
+     */
+    private void changeGameStatus() {
         if (model.getGuess() < model.getNumber()) {
             model.getGameRange().get(model.getCurrentTry()).min = model.getGuess();
+            view.printMessage(View.GUESS_WAS_LOWER);
             model.addNodeToIntMap(model.getGuess(), model.getGameRange().get(model.getCurrentTry()).max);
         } else if (model.getGuess() > model.getNumber()) {
             model.getGameRange().get(model.getCurrentTry()).max = model.getGuess();
+            view.printMessage(View.GUESS_WAS_HIGHER);
             model.addNodeToIntMap(model.getGameRange().get(model.getCurrentTry()).min, model.getGuess());
         } else {
             model.setGameWon(true);
@@ -74,20 +118,5 @@ public class Controller {
         for (; model.getCurrentTry() > LOWEST_INDEX; model.decrementCurrentTry()) {
             model.getGameRange().get(model.getCurrentTry() - 1).outputSingleNode(View.PREVIOUS_RANGE, model.getCurrentTry() - 1);
         }
-    }
-
-    /**
-     * Validates user's integer input
-     * @param scanner simple text scanner which can parse primitive types and strings using regular expressions
-     * @return validated and parsed user's integer input
-     */
-    private int validateInputInt(Scanner scanner) {
-        view.printMessage(View.INPUT_INT);
-        while(!scanner.hasNextInt()) {
-
-            view.printMessage(View.WRONG_INT_INPUT + View.INPUT_INT);
-            scanner.next();
-        }
-        return scanner.nextInt();
     }
 }

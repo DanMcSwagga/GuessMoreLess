@@ -62,14 +62,5 @@ public class Model {
     public void addNodeToIntMap(int firstValue, int secondValue) {
         this.gameRange.add(new IntMap(firstValue, secondValue));
     }
-
-    /**
-     * Checks if user has inputted his guess in <strong>correct boundaries</strong> (within game range)
-     * @return true if guess fits the range, false otherwise
-     */
-    // TODO test with different inputs
-    public boolean fitsRange(int guess) {
-        return (guess >= this.gameRange.get(currentTry).min && guess <= this.gameRange.get(currentTry).max);
-    }
 }
 
