@@ -32,7 +32,7 @@ public class Model {
      * Basic setters which set values of user's guess and game's status
      */
     public void setGuess(int value) { this.guessedNumber = value; }
-    public void setGameWon(boolean value) { this.bGameIsWon = value; }
+    private void setGameWon() { this.bGameIsWon = true; }
 
     public void incrementCurrentTry() { currentTry++; }
     public void decrementCurrentTry() { currentTry--; }
@@ -85,7 +85,7 @@ public class Model {
             view.printMessage(View.GUESS_WAS_HIGHER);
             this.addNodeToIntMap(this.getGameRange().get(this.getCurrentTry()).getMin(), this.getGuess());
         } else {
-            this.setGameWon(true);
+            this.setGameWon();
         }
     }
 }
