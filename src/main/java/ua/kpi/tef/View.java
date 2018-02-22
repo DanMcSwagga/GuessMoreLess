@@ -13,14 +13,14 @@ public class View {
             "-<  (~)  >-   \n" +
             " .'  #  '.\n";
     public static final String INTRO_MESSAGE =  "***    Welcome to Guess Number! - a fun game with numbers  ***\n" +
-                                                "***    Try to guess what number I've picked [%d to %d] ;)  ***\n\n";
+                                                "***    Try to guess what number I've picked (%d to %d) ;)  ***\n\n";
     public static final String INPUT_INT = "Input your integer guess: ";
     public static final String WRONG_TYPE_INPUT = "Aww shucks! It seems that your input wasn't an integer! \n" +
                                                   "Try again please. ";
-    public static final String WRONG_INPUT_INT_RANGE = "Oops! Seems like your input didn't fit the game range [%d to %d]!\n" +
+    public static final String WRONG_INPUT_INT_RANGE = "Oops! Seems like your input didn't fit the game range (%d to %d)!\n" +
                                                  "Try again please. ";
-    public static final String CURRENT_RANGE_ATTEMPT = "Attempt #%d. Current range -- [%d to %d]\n";
-    public static final String PREVIOUS_RANGE = "Attempt #%d [%d to %d]\n";
+    public static final String CURRENT_RANGE_ATTEMPT = "Attempt #%d. Current range -- (%d to %d)\n";
+    public static final String PREVIOUS_RANGE = "Attempt #%d (%d to %d)\n";
     public static final String PREVIOUS_TRY = "Previous try -- ";
     public static final String GUESS_WAS_LOWER = "Your guess was too low!\n";
     public static final String GUESS_WAS_HIGHER = "Your guess was too high!\n";

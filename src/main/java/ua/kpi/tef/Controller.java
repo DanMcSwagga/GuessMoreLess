@@ -23,6 +23,8 @@ public class Controller {
         view.printMessage(View.ASCII_ART_INTRO);
         view.printMessageAndTwoInts(View.INTRO_MESSAGE, START_MIN, START_MAX);
 
+        view.printMessage("*Psst!* Secret value is " + model.getNumber());
+
         gameProcess();
         view.printMessage(View.ASCII_ART_OUTRO);
         view.printMessage(View.USER_WON);
@@ -34,16 +36,16 @@ public class Controller {
      * Describes the game's process (most of the game's logic and user interaction)
      */
     private void gameProcess() {
+        Scanner sc = new Scanner(System.in);
         model.addNodeToIntMap(START_MIN, START_MAX);
         do {
             if (model.getCurrentTry() > 0) view.printMessage(View.PREVIOUS_TRY + model.getGuess());
 
             model.getGameRange().get(model.getCurrentTry()).outputSingleNode(View.CURRENT_RANGE_ATTEMPT, model.getCurrentTry());
 
-            Scanner sc = new Scanner(System.in);
             model.setGuess(validateInput(sc));
 
-            changeGameStatus();
+            model.changeGameStatus(view);
             model.incrementCurrentTry();
         } while (!model.getGameWon());
     }
@@ -65,10 +67,10 @@ public class Controller {
             if (scanner.hasNextInt()) {
                 userGuess = scanner.nextInt();
 
-                if (!fitsRange(userGuess)) {
+                if (!model.fitsRange(userGuess)) {
                     view.printMessageAndTwoInts(View.WRONG_INPUT_INT_RANGE,
-                            model.getGameRange().get(model.getCurrentTry()).min,
-                            model.getGameRange().get(model.getCurrentTry()).max);
+                            model.getGameRange().get(model.getCurrentTry()).getMin(),
+                            model.getGameRange().get(model.getCurrentTry()).getMax());
                     view.printMessage(View.INPUT_INT);
                 } else {
                     incorrectInput = false;
@@ -80,33 +82,6 @@ public class Controller {
         }
 
         return userGuess;
-    }
-
-    /**
-     * Checks if user has inputted his guess in <strong>correct boundaries</strong> (within game range)
-     * @return true if guess fits the range, false otherwise
-     */
-    private boolean fitsRange(int guess) {
-        return (guess >= model.getGameRange().get(model.getCurrentTry()).min && guess <= model.getGameRange().get(model.getCurrentTry()).max);
-    }
-
-
-    /**
-     * Changes the game's range via user's <strong>validated</strong> integer input
-     * or sets the game as won if input matched the generated number
-     */
-    private void changeGameStatus() {
-        if (model.getGuess() < model.getNumber()) {
-            model.getGameRange().get(model.getCurrentTry()).min = model.getGuess();
-            view.printMessage(View.GUESS_WAS_LOWER);
-            model.addNodeToIntMap(model.getGuess(), model.getGameRange().get(model.getCurrentTry()).max);
-        } else if (model.getGuess() > model.getNumber()) {
-            model.getGameRange().get(model.getCurrentTry()).max = model.getGuess();
-            view.printMessage(View.GUESS_WAS_HIGHER);
-            model.addNodeToIntMap(model.getGameRange().get(model.getCurrentTry()).min, model.getGuess());
-        } else {
-            model.setGameWon(true);
-        }
     }
 
     /**

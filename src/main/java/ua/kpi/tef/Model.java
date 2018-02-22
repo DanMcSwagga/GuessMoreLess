@@ -62,5 +62,31 @@ public class Model {
     public void addNodeToIntMap(int firstValue, int secondValue) {
         this.gameRange.add(new IntMap(firstValue, secondValue));
     }
+
+    /**
+     * Checks if user has inputted his guess in <strong>correct boundaries</strong> (within game range)
+     * @return true if guess fits the range, false otherwise
+     */
+    public boolean fitsRange(int guess) {
+        return (guess > this.getGameRange().get(this.getCurrentTry()).getMin() && guess < this.getGameRange().get(this.getCurrentTry()).getMax());
+    }
+
+    /**
+     * Changes the game's range via user's <strong>validated</strong> integer input
+     * or sets the game as won if input matched the generated number
+     */
+    public void changeGameStatus(View view) {
+        if (this.getGuess() < this.getNumber()) {
+            this.getGameRange().get(this.getCurrentTry()).setMin(this.getGuess());
+            view.printMessage(View.GUESS_WAS_LOWER);
+            this.addNodeToIntMap(this.getGuess(), this.getGameRange().get(this.getCurrentTry()).getMax());
+        } else if (this.getGuess() > this.getNumber()) {
+            this.getGameRange().get(this.getCurrentTry()).setMax(this.getGuess());
+            view.printMessage(View.GUESS_WAS_HIGHER);
+            this.addNodeToIntMap(this.getGameRange().get(this.getCurrentTry()).getMin(), this.getGuess());
+        } else {
+            this.setGameWon(true);
+        }
+    }
 }
 

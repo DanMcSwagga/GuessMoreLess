@@ -1,8 +1,8 @@
 package ua.kpi.tef;
 
 public class IntMap {
-    int min;
-    int max;
+    private int min;
+    private int max;
 
     IntMap(int min, int max) {
         this.min = min;
@@ -17,4 +17,10 @@ public class IntMap {
     public void outputSingleNode(String message, int attempt) {
         System.out.format(message, attempt + 1, this.min, this.max);
     }
+
+    public int getMax() { return max; }
+    public int getMin() { return min; }
+
+    public void setMax(int max) { this.max = max; }
+    public void setMin(int min) { this.min = min; }
 }
